@@ -102,7 +102,7 @@
 /*
  * Memory layout configuration
  */
-#define CONFIG_MEM_NVM_BASE		0x00000000
+#define CONFIG_MEM_NVM_BASE		0x08000000
 #define CONFIG_MEM_NVM_LEN		(1024 * 1024 * 2)
 #define CONFIG_ENVM			1
 #if defined(CONFIG_ENVM)
@@ -251,11 +251,12 @@
  */
 #define CONFIG_BOOTDELAY		3
 #define CONFIG_ZERO_BOOTDELAY_CHECK
-#define CONFIG_BOOTCOMMAND		"run envmboot"
+#define CONFIG_BOOTCOMMAND		"run flashboot"
 
 #define CONFIG_HOSTNAME	stm-disco
 #define CONFIG_BOOTARGS	"stm32_platform=stm-disco "\
-				"console=ttyS0,115200 panic=10"
+				"console=ttyS0,115200 panic=10 "\
+				"root=/dev/mtdblock0 rdinit=/sbin/init "
 #define LOADADDR		"0xD0007FC0"
 
 #define REV_EXTRA_ENV		\
@@ -272,11 +273,13 @@
 	"loadaddr=" LOADADDR "\0"				\
 	"args=setenv bootargs " CONFIG_BOOTARGS "\0"		\
 	"addip=setenv bootargs ${bootargs} ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}:eth0:off\0"				\
-	"envmaddr=08040000\0"					\
+	"envmaddr=081E0000\0"                                   \
+	"flashaddr=08020000\0"						\
+	"flashboot=run addip;bootm ${flashaddr}\0"	\
 	"ethaddr=C0:B1:3C:88:88:85\0"				\
 	"ipaddr=172.17.4.206\0"					\
 	"serverip=172.17.0.1\0"					\
-	"image=stm32f429/uImage\0"				\
+	"image=uImage\0"				\
 	"stdin=serial\0"					\
 	"netboot=tftp ${image};run args addip;bootm\0"		\
 	REV_EXTRA_ENV
