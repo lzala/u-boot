@@ -239,10 +239,12 @@ s32 serial_init(void)
 	/*
 	 * Configure GPIOs
 	 */
-	rv = stm32f2_gpio_config(&tx_gpio, gpio_role[USART_PORT]);
+	tx_gpio.role = gpio_role[USART_PORT];
+	rv = stm32f2_gpio_config(&tx_gpio);
 	if (rv != 0)
 		goto out;
-	rv = stm32f2_gpio_config(&rx_gpio, gpio_role[USART_PORT]);
+	rx_gpio.role = gpio_role[USART_PORT];
+	rv = stm32f2_gpio_config(&rx_gpio);
 	if (rv != 0)
 		goto out;
 

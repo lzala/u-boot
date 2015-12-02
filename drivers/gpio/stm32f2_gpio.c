@@ -78,6 +78,19 @@ DECLARE_GLOBAL_DATA_PTR;
 #define STM32F2_GPIO_PUPD_DOWN	0x02
 
 /*
+ * AF5 selection
+ */
+#define STM32F2_GPIO_AF_SPI1	0x05
+#define STM32F2_GPIO_AF_SPI2	0x05
+#define STM32F2_GPIO_AF_SPI4	0x05
+#define STM32F2_GPIO_AF_SPI5	0x05
+#define STM32F2_GPIO_AF_SPI6	0x05
+
+/*
+ * AF6 selection
+ */
+#define STM32F2_GPIO_AF_SPI3	0x06
+/*
  * AF7 selection
  */
 #define STM32F2_GPIO_AF_USART1	0x07
@@ -92,9 +105,14 @@ DECLARE_GLOBAL_DATA_PTR;
 #define STM32F2_GPIO_AF_USART6	0x08
 
 /*
+ * AF9 selection
+ */
+#define STM32F2_GPIO_AF_LTDCx	0x09
+/*
+
  * AF11 selection
  */
-#define STM32F2_GPIO_AF_MAC	0x0B
+#define STM32F2_GPIO_AF_MAC		0x0B
 
 /*
  * AF12 selection
@@ -104,7 +122,7 @@ DECLARE_GLOBAL_DATA_PTR;
 /*
  * LTDC AF
  */
-#define STM32F2_GPIO_AF_LTDC   0x0E
+#define STM32F2_GPIO_AF_LTDC 	0x0E
 
 /*
  * GPIO register map
@@ -137,10 +155,11 @@ static const unsigned long io_base[] = {
 static const u32 af_val[STM32F2_GPIO_ROLE_LAST] = {
 	STM32F2_GPIO_AF_USART1, STM32F2_GPIO_AF_USART2, STM32F2_GPIO_AF_USART3,
 	STM32F2_GPIO_AF_USART4, STM32F2_GPIO_AF_USART5, STM32F2_GPIO_AF_USART6,
+	STM32F2_GPIO_AF_SPI1,   STM32F2_GPIO_AF_SPI2,	STM32F2_GPIO_AF_SPI3,
+	STM32F2_GPIO_AF_SPI4,	STM32F2_GPIO_AF_SPI5, 	STM32F2_GPIO_AF_SPI6,
 	STM32F2_GPIO_AF_MAC,
 	(u32)-1,
-	STM32F2_GPIO_AF_LTDC,
-	STM32F2_GPIO_AF_FSMC,
+	STM32F2_GPIO_AF_LTDCx,	STM32F2_GPIO_AF_LTDC,	STM32F2_GPIO_AF_FSMC,
 	(u32)-1
 };
 
@@ -148,12 +167,12 @@ static const u32 af_val[STM32F2_GPIO_ROLE_LAST] = {
  * Configure the specified GPIO for the specified role
  * Returns 0 on success, -EINVAL otherwise.
  */
-s32 stm32f2_gpio_config(const struct stm32f2_gpio_dsc *dsc,
-			enum stm32f2_gpio_role role)
+s32 stm32f2_gpio_config(const struct stm32f2_gpio_dsc *dsc)
 {
 	volatile struct stm32f2_gpio_regs	*gpio_regs;
 
 	u32	otype, ospeed, pupd, mode, i;
+	s32  role = dsc->role;
 	s32	rv;
 
 	/*
@@ -184,6 +203,17 @@ s32 stm32f2_gpio_config(const struct stm32f2_gpio_dsc *dsc,
 		pupd   = STM32F2_GPIO_PUPD_UP;
 		mode   = STM32F2_GPIO_MODE_AF;
 		break;
+	case STM32F2_GPIO_ROLE_SPI1:
+	case STM32F2_GPIO_ROLE_SPI2:
+	case STM32F2_GPIO_ROLE_SPI3:
+	case STM32F2_GPIO_ROLE_SPI4:
+	case STM32F2_GPIO_ROLE_SPI5:
+	case STM32F2_GPIO_ROLE_SPI6:
+		otype  = STM32F2_GPIO_OTYPE_PP;
+		ospeed = STM32F2_GPIO_SPEED_50M;
+		pupd   = STM32F2_GPIO_PUPD_NO;
+		mode   = STM32F2_GPIO_MODE_AF;
+		break;
 	case STM32F2_GPIO_ROLE_ETHERNET:
 	case STM32F2_GPIO_ROLE_MCO:
 	case STM32F2_GPIO_ROLE_FSMC:
@@ -199,6 +229,7 @@ s32 stm32f2_gpio_config(const struct stm32f2_gpio_dsc *dsc,
 		mode   = STM32F2_GPIO_MODE_OUT;
 		break;
 	case STM32F2_GPIO_ROLE_LTDC:
+	case STM32F2_GPIO_ROLE_LTDCx:
 		otype  = STM32F2_GPIO_OTYPE_PP;
 		ospeed = STM32F2_GPIO_SPEED_50M;
 		pupd   = STM32F2_GPIO_PUPD_NO;

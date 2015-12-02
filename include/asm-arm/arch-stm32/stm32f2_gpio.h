@@ -71,8 +71,15 @@ enum stm32f2_gpio_role {
 	STM32F2_GPIO_ROLE_USART4,	/* USART4			      */
 	STM32F2_GPIO_ROLE_USART5,	/* USART5			      */
 	STM32F2_GPIO_ROLE_USART6,	/* USART6			      */
+	STM32F2_GPIO_ROLE_SPI1,			/* SPI1 						*/
+	STM32F2_GPIO_ROLE_SPI2,			/* SPI2 						*/
+	STM32F2_GPIO_ROLE_SPI3,			/* SPI3 						*/
+	STM32F2_GPIO_ROLE_SPI4,			/* SPI4 						*/
+	STM32F2_GPIO_ROLE_SPI5,			/* SPI5 						*/
+	STM32F2_GPIO_ROLE_SPI6,			/* SPI6 						*/
 	STM32F2_GPIO_ROLE_ETHERNET,	/* MAC				      */
 	STM32F2_GPIO_ROLE_MCO,		/* MC external output clock	      */
+	STM32F2_GPIO_ROLE_LTDCx,	/* LCD controller		      */
 	STM32F2_GPIO_ROLE_LTDC,		/* LCD controller		      */
 	STM32F2_GPIO_ROLE_FSMC,		/* FSMC static memory controller      */
 	STM32F2_GPIO_ROLE_FMC = STM32F2_GPIO_ROLE_FSMC,
@@ -85,15 +92,15 @@ enum stm32f2_gpio_role {
  * GPIO descriptor
  */
 struct stm32f2_gpio_dsc {
-	enum stm32f2_gpio_port	port;	/* GPIO port			      */
-	enum stm32f2_gpio_pin	pin;	/* GPIO pin			      */
+	enum stm32f2_gpio_port	port;	/* GPIO port 	*/
+	enum stm32f2_gpio_pin	pin;	/* GPIO pin 	*/
+	enum stm32f2_gpio_role  role;	/* GPIO role	*/
 };
 
 /*
  * Configure the specified GPIO for the specified role
  */
-int stm32f2_gpio_config(const struct stm32f2_gpio_dsc *gpio_dsc,
-			enum stm32f2_gpio_role role);
+int stm32f2_gpio_config(const struct stm32f2_gpio_dsc *gpio_dsc);
 
 /*
  * Set GPOUT to the state specified (1, 0)

@@ -88,7 +88,7 @@ int checkboard(void)
 int dram_init(void)
 {
 	static struct stm32f2_gpio_dsc	ctrl_gpio = {STM32F2_GPIO_PORT_I,
-						     STM32F2_GPIO_PIN_9};
+						     STM32F2_GPIO_PIN_9, STM32F2_GPIO_ROLE_GPOUT};
 	int				rv = 0;
 
 	rv = fsmc_nor_psram_init(CONFIG_SYS_RAM_CS,
@@ -103,7 +103,7 @@ int dram_init(void)
 	if (rv != 0)
 		goto out;
 
-	rv = stm32f2_gpio_config(&ctrl_gpio, STM32F2_GPIO_ROLE_GPOUT);
+	rv = stm32f2_gpio_config(&ctrl_gpio);
 	if (rv != 0)
 		goto out;
 
